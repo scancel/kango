@@ -13,6 +13,7 @@ module Kango
         def trigger &block
           return if @on
           self.watcher = DirectoryWatcher.new(self.watch_folder, :pre_load => true)
+		  self.watcher.glob = '**/*'
           self.watcher.interval = 1
           self.watcher.add_observer do |*args|
             block.call
@@ -22,10 +23,11 @@ module Kango
         end
 
         def command
-          %{open -a '/Applications/Google\ Chrome\ Canary.app' 'http://reload.extensions'}
+          %{start chrome \"http://reload.extensions\"}
         end
 
         def reload_browser
+		  STDOUT.puts "Files changed, reloading extension..."
           system(command)
         end
       end
